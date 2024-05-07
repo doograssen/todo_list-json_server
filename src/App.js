@@ -27,6 +27,18 @@ export const App = () => {
 
 	const onSubmit = (formData) => {
 		console.log(formData);
+		fetch('http://localhost:3005/todos', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json;charset=utf-8' },
+			body: JSON.stringify({
+				"text": formData.edit,
+			}),
+		})
+		.then((rawResponse) => rawResponse.json())
+		.then((response) => {
+			console.log('Ответ сервера - ', response);
+			setRefreshTodoListFlag(true);
+		});
 	};
 
 	const {
@@ -40,8 +52,6 @@ export const App = () => {
 		resolver: yupResolver(EditScheme),
 		mode: 'onTouched',
 	});
-
-
 
 	// End of form
 
@@ -81,10 +91,10 @@ export const App = () => {
 						? <div className="loader"></div>
 						: <ul className="app-list">
 							{
-							TodoList.map(({userId, id, title}) =>  (
-								<li className="app-item" key={ userId + '_' + id }>
+							TodoList.map(({ id, text }) =>  (
+								<li className="app-item" key={ 'key_' + id }>
 									<button className="app-button" aria-label="Кнопка"></button>
-									{ title }
+									{ text }
 								</li>
 							))
 							}
