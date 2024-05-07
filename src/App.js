@@ -37,7 +37,7 @@ export const App = () => {
 			.then((rawResponse) => rawResponse.json())
 			.then((response) => {
 				console.log('Ответ сервера - ', response);
-				setRefreshTodoListFlag(true);
+				updatingList();
 			});
 	};
 
@@ -45,6 +45,8 @@ export const App = () => {
 		console.log(formData);
 		postData(formData.edit);
 	};
+
+	const updatingList = () => setRefreshTodoListFlag(!refreshTodoListFlag);
 
 	const {
 		register,
