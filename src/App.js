@@ -22,23 +22,28 @@ export const App = () => {
 	const [TodoList, setTodoList] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [refreshTodoListFlag, setRefreshTodoListFlag] = useState(false);
+	const [isCreated, setIsCreated] = useState(false);
 
 	// Form.
-
-	const onSubmit = (formData) => {
-		console.log(formData);
+	const postData = (data) => {
+		setIsCreated(true);
 		fetch('http://localhost:3005/todos', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json;charset=utf-8' },
 			body: JSON.stringify({
-				"text": formData.edit,
+				text: data,
 			}),
 		})
-		.then((rawResponse) => rawResponse.json())
-		.then((response) => {
-			console.log('Ответ сервера - ', response);
-			setRefreshTodoListFlag(true);
-		});
+			.then((rawResponse) => rawResponse.json())
+			.then((response) => {
+				console.log('Ответ сервера - ', response);
+				setRefreshTodoListFlag(true);
+			});
+	};
+
+	const onSubmit = (formData) => {
+		console.log(formData);
+		postData(formData.edit);
 	};
 
 	const {
@@ -57,15 +62,16 @@ export const App = () => {
 
 	useEffect(() => {
 		setIsLoading(true);
+		console.log('start');
 		fetch('http://localhost:3005/todos')
-		.then((loadedData) => loadedData.json())
-		.then((loadedTodos) => {
-			setTodoList(loadedTodos);
-		})
-		.finally(() => {
-			setIsLoading(false);
-			setRefreshTodoListFlag(false)
-		});
+			.then((loadedData) => loadedData.json())
+			.then((loadedTodos) => {
+				setTodoList(loadedTodos);
+			})
+			.finally(() => {
+				setIsLoading(false);
+				setIsCreated(false);
+			});
 	}, [refreshTodoListFlag]);
 
 	return (
@@ -81,25 +87,30 @@ export const App = () => {
 							placeholder="Введите задачу"
 							{...register('edit')}
 						/>
-						{errors.edit && <div className="form-error">{errors.edit?.message}</div>}
-						<button className="app-form-submit" type="submit" disabled={!isValid}>Добавить</button>
+						{errors.edit && (
+							<div className="form-error">{errors.edit?.message}</div>
+						)}
+						<button
+							className="app-form-submit"
+							type="submit"
+							disabled={!isValid || isCreated}
+						>
+							Добавить
+						</button>
 					</form>
-					<h3 className="app-caption">
-						Everyone
-					</h3>
-					{ isLoading
-						? <div className="loader"></div>
-						: <ul className="app-list">
-							{
-							TodoList.map(({ id, text }) =>  (
-								<li className="app-item" key={ 'key_' + id }>
+					<h3 className="app-caption">Everyone</h3>
+					{isLoading ? (
+						<div className="loader"></div>
+					) : (
+						<ul className="app-list">
+							{TodoList.map(({ id, text }) => (
+								<li className="app-item" key={'key_' + id}>
 									<button className="app-button" aria-label="Кнопка"></button>
-									{ text }
+									{text}
 								</li>
-							))
-							}
+							))}
 						</ul>
-					}
+					)}
 				</div>
 			</main>
 		</div>
