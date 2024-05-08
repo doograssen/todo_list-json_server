@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap");
 
 :root {
 	--default-color: 53, 56, 62;
@@ -8,7 +8,7 @@
 }
 .app {
 	color: rgb(var(--default-color));
-	font-family: 'Raleway', sans-serif;
+	font-family: "Raleway", sans-serif;
 }
 .app-container {
 	max-width: 500px;
@@ -27,7 +27,7 @@
 	list-style: none;
 }
 .app-item {
-	color: #35383E;
+	color: #35383e;
 	font-size: 20px;
 	font-weight: 700;
 	position: relative;
@@ -36,20 +36,18 @@
 	padding: 24px 55px 23px 65px;
 	background-color: rgba(53, 56, 62, 0.05);
 	border-radius: 22.5px;
+	box-shadow: inset 0 -3px 14px -10px #d1c0c0;
 	transition: background-color 0.4s;
 	word-break: break-all;
 	overflow: hidden;
 	z-index: 1;
 	&:hover {
-		background-color: rgba(53, 56, 62, 0.10);
+		background-color: rgba(53, 56, 62, 0.1);
 		.app-panel {
 			opacity: 1;
 			pointer-events: all;
 		}
 	}
-}
-.app-burger {
-
 }
 .app-caption {
 	color: rgba(var(--default-color), 0.5);
@@ -122,11 +120,15 @@
 	cursor: pointer;
 	img {
 		max-width: 100%;
-		transition: filter 0.3s, transform 0.2s;
+		max-height: 24px;
+		transition: transform 0.2s;
+		transform: perspective(1px);
 	}
-	&:hover img {
-		filter: drop-shadow(0 0 3px rgba(100, 100, 100, 0.6));
-		transform: scale(1.03);
+	&:hover {
+		img {
+			transform: scale(1.08) perspective(1px);
+			filter: brightness(1.2);
+		}
 	}
 }
 .loader {
@@ -142,85 +144,11 @@
 	animation: loader 1s infinite;
 }
 
-.form-error {
-	color: red;
-	font-size: 12px;
-	font-weight: 300;
-}
-.app-form {
-	display: grid;
-	grid-template-columns: 1fr 40px 40px;
-	gap: 12px;
-}
-
-.app-form-input {
-	color: #35383E;
-	font-size: 18px;
-	font-weight: 700;
-	position: relative;
-	max-width: 500px;
-	padding: 12px 23px 13px;
-	background-color: rgba(53, 56, 62, 0.05);
-	border: none;
-	border-radius: 11.5px;
-	transition: background-color 0.4s;
-	word-break: break-all;
-	overflow: hidden;
-	box-shadow: inset 0 -3px 14px -10px #d1c0c0;
-	z-index: 1;
-}
-
-.app-form-submit {
-	color: #ffffff;
-	font-size: 16px;
-	font-weight: 700;
-	grid-column: 2;
-	grid-row: 1/ 2;
-	padding: 8px;
-	background-color: transparent;
-	border: none;
-	border-radius: 11.5px;
-	cursor: pointer;
-	img {
-		width: 25px;
-		max-width: 100%;
-	}
-	&:disabled {
-		opacity: 0.5;
-	}
-}
-
-.app-form-search {
-	color: #ffffff;
-	font-size: 16px;
-	font-weight: 700;
-	grid-column: 3;
-	grid-row: 1/ 2;
-	padding: 8px 8px;
-	background-color: transparent;
-	border: none;
-	border-radius: 11.5px;
-	cursor: pointer;
-	img {
-		width: 25px;
-		max-width: 100%;
-	}
-}
 @keyframes loader {
 	0% {
-			transform: rotate(0deg);
+		transform: rotate(0deg);
 	}
 	100% {
-			transform: rotate(360deg);
+		transform: rotate(360deg);
 	}
 }
-
-/* .App-logo {
-	height: 40vmin;
-	pointer-events: none;
-}
-@media (prefers-reduced-motion: no-preference) {
-	.App-logo {
-		animation: App-logo-spin infinite 20s linear;
-	}
-} */
