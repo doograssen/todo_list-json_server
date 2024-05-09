@@ -20,9 +20,12 @@ export const App = () => {
 	const [searchResult, setSearchResult] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [refreshTodoListFlag, setRefreshTodoListFlag] = useState(false);
+	const [updatedItem, setUpdatedItem] = useState({});
+	const [needUpdate, setNeedUpdate] = useState(false);
 	const [isCreated, setIsCreated] = useState(false);
+	const [isDeleted, setIsDeleted] = useState(false);
+	const [isUpdated, setIsUpdated] = useState(false);
 
-	// Form.
 	const postData = (data) => {
 		setIsCreated(true);
 		fetch('http://localhost:3005/todos', {
@@ -36,6 +39,18 @@ export const App = () => {
 			.then((response) => {
 				updatingList();
 			});
+	};
+
+	const deleteData = (id) => {
+		setIsDeleted(true);
+		fetch('http://localhost:3005/todos/' + id, {
+			method: 'DELETE',
+		})
+			.then((rawResponse) => rawResponse.json())
+			.then((response) => {
+				updatingList();
+			})
+			.finally(() => setIsDeleted(false));
 	};
 
 	const updatingList = () => setRefreshTodoListFlag(!refreshTodoListFlag);
@@ -53,6 +68,22 @@ export const App = () => {
 				setIsCreated(false);
 			});
 	}, [refreshTodoListFlag]);
+
+	useEffect(() => {
+		if (!updatedItem.id) return;
+		setIsUpdated(true);
+		fetch('http://localhost:3005/todos/' + updatedItem.id, {
+			method: 'PUT',
+			headers: { 'Content-Type': 'application/json;charset=utf-8' },
+			body: JSON.stringify({
+				text: updatedItem.text,
+			}),
+		})
+			.then((rawResponse) => rawResponse.json())
+			.then((response) => {
+				updatingList();
+			});
+	}, [needUpdate]);
 
 	const addTask = (event) => {
 		event.preventDefault();
@@ -84,7 +115,7 @@ export const App = () => {
 	return (
 		<div className="app">
 			<main className="app-main">
-				<h1 className="app-title">Team ToDo Example</h1>
+				<h1 className="app-title">ToDo List (JSON Server)</h1>
 				<div className="app-container">
 					<TaskForm
 						data={formData}
@@ -92,13 +123,21 @@ export const App = () => {
 						add={addTask}
 						search={searchTask}
 					/>
-					<h3 className="app-caption">Everyone</h3>
+					<h3 className="app-caption">Tasks</h3>
 					{isLoading ? (
 						<div className="loader"></div>
 					) : (
 						<ul className="app-list">
 							{TodoList.map(({ id, text }) => (
-								<Task id={id} text={text} />
+								<Task
+									key={'task-' + id}
+									id={id}
+									text={text}
+									onDelete={deleteData}
+									setNewData={setUpdatedItem}
+									needUpdate={needUpdate}
+									setNeedUpdate={setNeedUpdate}
+								/>
 							))}
 						</ul>
 					)}

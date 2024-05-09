@@ -1,0 +1,111 @@
+.task-item {
+	color: #35383e;
+	font-size: 20px;
+	font-weight: 700;
+	position: relative;
+	max-width: 500px;
+	margin-bottom: 10px;
+	padding: 24px 55px 23px 65px;
+	background-color: rgba(53, 56, 62, 0.05);
+	border-radius: 22.5px;
+	box-shadow: inset 0 -3px 14px -10px #d1c0c0;
+	transition: background-color 0.4s;
+	word-break: break-all;
+	overflow: hidden;
+	z-index: 1;
+	&:hover {
+		background-color: rgba(53, 56, 62, 0.1);
+		.task-item__panel {
+			opacity: 1;
+			pointer-events: all;
+		}
+	}
+	&:has(input:not([readonly])) {
+		background-color: rgba(255, 192, 80, 0.75);
+	}
+}
+.task-item__button {
+	position: absolute;
+	top: 50%;
+	left: 15px;
+	width: 35px;
+	height: 35px;
+	border: none;
+	border-radius: 11.5px;
+	background-color: rgba(53, 56, 62, 0.1);
+	transform: translateY(-50%);
+	z-index: 1;
+}
+.task-item__burger {
+	position: absolute;
+	top: 50%;
+	right: 12px;
+	width: 25px;
+	height: 25px;
+	padding: 2px;
+	background-color: transparent;
+	border: none;
+	transform: translateY(-50%);
+	cursor: pointer;
+	z-index: 1;
+}
+.task-item__dot {
+	display: block;
+	width: 4px;
+	height: 4px;
+	margin: 0 auto 2px;
+	background-color: #888888;
+	border-radius: 50%;
+	transition: background-color 0.4s;
+}
+.task-item__panel {
+	position: absolute;
+	top: 0;
+	right: 0;
+	height: 100%;
+	width: 45px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	background-color: rgba(53, 56, 62, 0.05);
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.4s;
+	z-index: 2;
+}
+.task-item__edit,
+.task-item__delete {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: 50%;
+	padding: 10px 8px;
+	border: none;
+	cursor: pointer;
+	img {
+		max-width: 100%;
+		max-height: 24px;
+		transition: transform 0.2s;
+		transform: perspective(1px);
+	}
+	&:hover {
+		img {
+			transform: scale(1.08) perspective(1px);
+			filter: brightness(1.2);
+		}
+	}
+}
+.task-item__input {
+	color: #35383e;
+	font-size: 20px;
+	font-weight: 700;
+	font-family: "Raleway", sans-serif;
+	padding: 0;
+	background-color: transparent;
+	border: none;
+	outline: none;
+	&:not([readonly]) {
+		font-style: italic;
+	}
+}
