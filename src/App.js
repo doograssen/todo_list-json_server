@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import './App.css';
 import { Task } from './components/Task/Task';
 import { TaskForm } from './components/form/TaskForm';
+import resetImage from './images/icon-reset.svg';
 
 const INITIAL_FORM_STATE = {
 	task: '',
@@ -12,6 +13,7 @@ const ERRORS = {
 	EMPTY: 'Поле обязательно для заполнения',
 	MIN_LENGTH: 'слишком короткое описание',
 	MAX_LENGTH: 'слишком длинное описание задачи',
+	NO_RESULT: 'нет результатов по запросу',
 };
 
 export const App = () => {
@@ -62,6 +64,9 @@ export const App = () => {
 			.then((loadedData) => loadedData.json())
 			.then((loadedTodos) => {
 				setTodoList(loadedTodos);
+				if (searchResult.length) {
+					searchTask(formData.task, loadedTodos);
+				}
 			})
 			.finally(() => {
 				setIsLoading(false);
@@ -82,6 +87,9 @@ export const App = () => {
 			.then((rawResponse) => rawResponse.json())
 			.then((response) => {
 				updatingList();
+			})
+			.finally(() => {
+				setIsUpdated(false);
 			});
 	}, [needUpdate]);
 
@@ -103,13 +111,30 @@ export const App = () => {
 		}
 	};
 
-	const searchTask = (event) => {
+	const searchTask = (text, list) => {
+		const result = list.filter((element) => {
+			return element.text.includes(text);
+		});
+		setSearchResult(result);
+		if (!result.length) {
+			setFormData({ ...formData, error: ERRORS.NO_RESULT });
+		}
+	};
+
+	const onSearch = (event) => {
 		event.preventDefault();
 		const currentState = { ...formData };
 		if (!currentState.task.length) {
 			currentState.error = ERRORS.EMPTY;
 		}
 		setFormData(currentState);
+		if (!currentState.error) {
+			searchTask(currentState.task, TodoList);
+		}
+	};
+
+	const resetList = () => {
+		setSearchResult([]);
 	};
 
 	return (
@@ -121,24 +146,43 @@ export const App = () => {
 						data={formData}
 						setData={setFormData}
 						add={addTask}
-						search={searchTask}
+						search={onSearch}
 					/>
-					<h3 className="app-caption">Tasks</h3>
-					{isLoading ? (
+					<div className="app-header">
+						<h3 className="app-caption">Tasks</h3>
+						{Boolean(searchResult.length) && (
+							<button className="app-reset" onClick={resetList}>
+								<img src={resetImage} alt="Reset" />
+							</button>
+						)}
+					</div>
+					{isLoading || isCreated || isDeleted || isUpdated ? (
 						<div className="loader"></div>
 					) : (
 						<ul className="app-list">
-							{TodoList.map(({ id, text }) => (
-								<Task
-									key={'task-' + id}
-									id={id}
-									text={text}
-									onDelete={deleteData}
-									setNewData={setUpdatedItem}
-									needUpdate={needUpdate}
-									setNeedUpdate={setNeedUpdate}
-								/>
-							))}
+							{searchResult.length
+								? searchResult.map(({ id, text }) => (
+										<Task
+											key={'task-' + id}
+											id={id}
+											text={text}
+											onDelete={deleteData}
+											setNewData={setUpdatedItem}
+											needUpdate={needUpdate}
+											setNeedUpdate={setNeedUpdate}
+										/>
+									))
+								: TodoList.map(({ id, text }) => (
+										<Task
+											key={'task-' + id}
+											id={id}
+											text={text}
+											onDelete={deleteData}
+											setNewData={setUpdatedItem}
+											needUpdate={needUpdate}
+											setNeedUpdate={setNeedUpdate}
+										/>
+									))}
 						</ul>
 					)}
 				</div>
