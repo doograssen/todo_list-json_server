@@ -1,0 +1,33 @@
+.header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 22px;
+	margin-top: 22px;
+	border-bottom: 2px solid rgba(var(--default-color), 0.05);
+}
+.header__caption {
+	color: rgba(var(--default-color), 0.5);
+	font-size: 22px;
+	margin-top: 0;
+	margin-bottom: 10px;
+}
+.header__btn {
+	width: 25px;
+	height: 25px;
+	padding: 0;
+	background-color: transparent;
+	border: none;
+	transition: transform 0.4s;
+	transform: perspective(1px);
+	img {
+		width: 100%;
+	}
+	&:hover {
+		transform: scale(1.2) perspective(1px);
+	}
+}
+.header__btn--sort {
+	margin-left: auto;
+	margin-right: 10px;
+}

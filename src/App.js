@@ -1,24 +1,17 @@
 import { useState, useEffect } from 'react';
 import './App.css';
 import { Task } from './components/Task/Task';
-import { TaskForm } from './components/form/TaskForm';
-import resetImage from './images/icon-reset.svg';
-
-const INITIAL_FORM_STATE = {
-	task: '',
-	error: '',
-};
-
-const ERRORS = {
-	EMPTY: 'Поле обязательно для заполнения',
-	MIN_LENGTH: 'слишком короткое описание',
-	MAX_LENGTH: 'слишком длинное описание задачи',
-	NO_RESULT: 'нет результатов по запросу',
-};
+import { TaskForm } from './components/TaskForm/TaskForm';
+import { Header } from './components/Header/Header';
+import {
+	ERRORS,
+	INITIAL_FORM_STATE,
+	SORT_INDEX,
+} from './components/utils/constants';
 
 export const App = () => {
 	const [formData, setFormData] = useState(INITIAL_FORM_STATE);
-	const [TodoList, setTodoList] = useState([]);
+	const [todoList, setTodoList] = useState([]);
 	const [searchResult, setSearchResult] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [refreshTodoListFlag, setRefreshTodoListFlag] = useState(false);
@@ -27,6 +20,7 @@ export const App = () => {
 	const [isCreated, setIsCreated] = useState(false);
 	const [isDeleted, setIsDeleted] = useState(false);
 	const [isUpdated, setIsUpdated] = useState(false);
+	const [sortStatus, setSortStatus] = useState('DEFAULT');
 
 	const postData = (data) => {
 		setIsCreated(true);
@@ -59,10 +53,12 @@ export const App = () => {
 
 	useEffect(() => {
 		setIsLoading(true);
-		console.log('start');
 		fetch('http://localhost:3005/todos')
 			.then((loadedData) => loadedData.json())
 			.then((loadedTodos) => {
+				if (loadedTodos) {
+					loadedTodos = sortList(loadedTodos, SORT_INDEX[sortStatus]);
+				}
 				setTodoList(loadedTodos);
 				if (searchResult.length) {
 					searchTask(formData.task, loadedTodos);
@@ -72,7 +68,7 @@ export const App = () => {
 				setIsLoading(false);
 				setIsCreated(false);
 			});
-	}, [refreshTodoListFlag]);
+	}, [refreshTodoListFlag, sortStatus]);
 
 	useEffect(() => {
 		if (!updatedItem.id) return;
@@ -129,12 +125,13 @@ export const App = () => {
 		}
 		setFormData(currentState);
 		if (!currentState.error) {
-			searchTask(currentState.task, TodoList);
+			searchTask(currentState.task, todoList);
 		}
 	};
 
-	const resetList = () => {
-		setSearchResult([]);
+	const sortList = (list, index) => {
+		list.sort((a, b) => (a.text < b.text ? index : index * -1));
+		return list;
 	};
 
 	return (
@@ -148,14 +145,13 @@ export const App = () => {
 						add={addTask}
 						search={onSearch}
 					/>
-					<div className="app-header">
-						<h3 className="app-caption">Tasks</h3>
-						{Boolean(searchResult.length) && (
-							<button className="app-reset" onClick={resetList}>
-								<img src={resetImage} alt="Reset" />
-							</button>
-						)}
-					</div>
+					<Header
+						sortList={sortList}
+						searchLength={searchResult.length}
+						setResult={setSearchResult}
+						sortStatus={sortStatus}
+						setSortStatus={setSortStatus}
+					/>
 					{isLoading || isCreated || isDeleted || isUpdated ? (
 						<div className="loader"></div>
 					) : (
@@ -172,7 +168,7 @@ export const App = () => {
 											setNeedUpdate={setNeedUpdate}
 										/>
 									))
-								: TodoList.map(({ id, text }) => (
+								: todoList.map(({ id, text }) => (
 										<Task
 											key={'task-' + id}
 											id={id}

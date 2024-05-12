@@ -30,19 +30,17 @@ export const TaskForm = ({data, setData, add, search}) => {
 			<button
 				className="task-form__submit"
 				type="submit"
-				// disabled={!isValid || isCreated}
 				aria-label="Добавить"
-				onClick={add}
-			>
+				title="Добавить"
+				onClick={add}>
 				<img src={plusImage} alt="Добавить" />
 			</button>
 			<button
 				className="task-form__search"
 				type="submit"
-				// disabled={!isValid || isCreated}
 				aria-label="Поиск"
-				onClick={search}
-			>
+				title="Поиск"
+				onClick={search}>
 				<img src={searchImage} alt="Найти" />
 			</button>
 		</form>

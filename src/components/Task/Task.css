@@ -24,7 +24,7 @@
 		background-color: rgba(255, 192, 80, 0.75);
 	}
 }
-.task-item__button {
+.task-item__status {
 	position: absolute;
 	top: 50%;
 	left: 15px;
@@ -73,8 +73,18 @@
 	transition: opacity 0.4s;
 	z-index: 2;
 }
-.task-item__edit,
-.task-item__delete {
+.task-item__panel--edit {
+	opacity: 1;
+	transition:
+		transform 0.3s 0.1s,
+		opacity 0.3s 0.1s;
+	transform: translateX(100%);
+	z-index: 3;
+	&.show {
+		transform: none;
+	}
+}
+.task-item__btn {
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -96,6 +106,14 @@
 		}
 	}
 }
+.task-item__btn--accept {
+	&:hover {
+		img {
+			filter: none;
+			transform: scale(1.08) perspective(1px);
+		}
+	}
+}
 .task-item__input {
 	color: #35383e;
 	font-size: 20px;
@@ -110,4 +128,13 @@
 	&:not([readonly]) {
 		font-style: italic;
 	}
+}
+.task-item__error {
+	color: red;
+	font-size: 12px;
+	font-weight: 400;
+	position: absolute;
+	bottom: 6px;
+	left: 65px;
+	z-index: 2;
 }
