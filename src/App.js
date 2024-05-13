@@ -12,7 +12,7 @@ import {
 export const App = () => {
 	const [formData, setFormData] = useState(INITIAL_FORM_STATE);
 	const [todoList, setTodoList] = useState([]);
-	const [searchResult, setSearchResult] = useState([]);
+	const [searchState, setSearchState] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 	const [refreshTodoListFlag, setRefreshTodoListFlag] = useState(false);
 	const [updatedItem, setUpdatedItem] = useState({});
@@ -59,16 +59,18 @@ export const App = () => {
 				if (loadedTodos) {
 					loadedTodos = sortList(loadedTodos, SORT_INDEX[sortStatus]);
 				}
-				setTodoList(loadedTodos);
-				if (searchResult.length) {
+				if (searchState) {
 					searchTask(formData.task, loadedTodos);
+				}
+				else {
+					setTodoList(loadedTodos);
 				}
 			})
 			.finally(() => {
 				setIsLoading(false);
 				setIsCreated(false);
 			});
-	}, [refreshTodoListFlag, sortStatus]);
+	}, [refreshTodoListFlag, sortStatus, searchState]);
 
 	useEffect(() => {
 		if (!updatedItem.id) return;
@@ -111,9 +113,12 @@ export const App = () => {
 		const result = list.filter((element) => {
 			return element.text.includes(text);
 		});
-		setSearchResult(result);
 		if (!result.length) {
 			setFormData({ ...formData, error: ERRORS.NO_RESULT });
+		}
+		else {
+			setSearchState(true);
+			setTodoList(result);
 		}
 	};
 
@@ -146,9 +151,8 @@ export const App = () => {
 						search={onSearch}
 					/>
 					<Header
-						sortList={sortList}
-						searchLength={searchResult.length}
-						setResult={setSearchResult}
+						searchState={searchState}
+						setSearchState={setSearchState}
 						sortStatus={sortStatus}
 						setSortStatus={setSortStatus}
 					/>
@@ -156,29 +160,17 @@ export const App = () => {
 						<div className="loader"></div>
 					) : (
 						<ul className="app-list">
-							{searchResult.length
-								? searchResult.map(({ id, text }) => (
-										<Task
-											key={'task-' + id}
-											id={id}
-											text={text}
-											onDelete={deleteData}
-											setNewData={setUpdatedItem}
-											needUpdate={needUpdate}
-											setNeedUpdate={setNeedUpdate}
-										/>
-									))
-								: todoList.map(({ id, text }) => (
-										<Task
-											key={'task-' + id}
-											id={id}
-											text={text}
-											onDelete={deleteData}
-											setNewData={setUpdatedItem}
-											needUpdate={needUpdate}
-											setNeedUpdate={setNeedUpdate}
-										/>
-									))}
+							{todoList.map(({ id, text }) => (
+								<Task
+									key={'task-' + id}
+									id={id}
+									text={text}
+									onDelete={deleteData}
+									setNewData={setUpdatedItem}
+									needUpdate={needUpdate}
+									setNeedUpdate={setNeedUpdate}
+								/>
+							))}
 						</ul>
 					)}
 				</div>

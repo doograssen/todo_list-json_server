@@ -3,10 +3,10 @@ import { SortBtn } from '../buttons/sortbtn/SortBtn';
 import resetImage from '../../images/icon-reset.svg';
 import { SORT_STATUS } from '../utils/constants';
 import './Header.css';
-export const Header = ({sortList, searchLength, setResult, sortStatus, setSortStatus}) => {
+export const Header = ({searchState, setSearchState, sortStatus, setSortStatus}) => {
 
 	const resetList = () => {
-		setResult([]);
+		setSearchState(false);
 	};
 	const onSort = () => {
 		let index = SORT_STATUS.indexOf(sortStatus);
@@ -22,7 +22,7 @@ export const Header = ({sortList, searchLength, setResult, sortStatus, setSortSt
 		<div className="header">
 			<h3 className="header__caption">Tasks</h3>
 			<SortBtn clickHandler={onSort} status={sortStatus}/>
-			{Boolean(searchLength) && (
+			{searchState && (
 				<button
 					className="header__btn header__btn--reset"
 					title="Сбросить"
