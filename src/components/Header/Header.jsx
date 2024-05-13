@@ -1,7 +1,7 @@
 
 import { SortBtn } from '../buttons/sortbtn/SortBtn';
 import resetImage from '../../images/icon-reset.svg';
-import { SORT_STATUS } from '../utils/constants';
+import { SORT_STATUS } from '../../utils/constants';
 import './Header.css';
 export const Header = ({searchState, setSearchState, sortStatus, setSortStatus}) => {
 

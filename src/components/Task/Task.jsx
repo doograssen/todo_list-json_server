@@ -6,7 +6,7 @@ import './Task.css';
 import { useState, useRef } from 'react';
 import {
 	ERRORS
-} from '../utils/constants';
+} from '../../utils/constants';
 
 export const Task = ({id, text, onDelete, setNewData, needUpdate, setNeedUpdate})  => {
 	const [taskText, setTaskText] = useState(text);
@@ -60,7 +60,7 @@ export const Task = ({id, text, onDelete, setNewData, needUpdate, setNeedUpdate}
 				onBlur={onBlurHandler}
 				readOnly={!isEdited}
 				ref={inputRef} />
-			{ editError && (<div class="task-item__error">{editError}</div>)}
+			{ editError && (<div className="task-item__error">{editError}</div>)}
 			<div className="task-item__burger">
 				<span className="task-item__dot"></span>
 				<span className="task-item__dot"></span>
