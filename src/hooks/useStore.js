@@ -72,6 +72,10 @@ export const useStore = () => {
 					setTodoList(loadedTodos);
 				}
 			})
+			.catch((error) => {
+				console.error(error);
+				console.log('для запуска сервера выполните команду - json-server --watch ./src/db.json --port 3005');
+			})
 			.finally(() => {
 				setIsLoading(false);
 				setIsCreated(false);
